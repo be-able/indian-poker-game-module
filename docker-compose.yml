@@ -1,0 +1,16 @@
+version: '3.2'
+services:
+  mariadb:
+    image: 'mariadb:10.4.12'
+    restart: always
+    ports:
+      - '33060:3306'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=poker'
+      - 'MYSQL_ROOT_HOST=%'
+      - 'TZ="Asia/Seoul"'
+      - 'MYSQL_DATABASE=indian_poker'
+    volumes:
+      - './mysql/conf.d:/etc/mysql/conf.d'
+      - './mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:rw'
+      - '~/docker/${PROJECT_NAME}/var/lib/mysql:/var/lib/mysql'

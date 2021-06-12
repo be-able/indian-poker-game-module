@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active: core
+
+---
+
+server:
+  port: 8080
+spring:
+  profiles: core
+  datasource:
+    url: 'jdbc:mariadb://118.220.183.233:33060/indian_poker?useUnicode=true&characterEncoding=utf8mb4'
+    username: root
+    password: ${PLEASE_INPUT}
+    driver-class-name: 'org.mariadb.jdbc.Driver'
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: 'org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy'
+      ddl-auto: update
+    database-platform: 'org.hibernate.dialect.MariaDB103Dialect'
+    generate-ddl: true
+    show-sql: true
