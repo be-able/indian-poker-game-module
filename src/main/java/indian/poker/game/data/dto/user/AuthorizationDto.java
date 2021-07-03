@@ -12,22 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthorizationDto {
-    
+
   private boolean writeInfo;
 
   private boolean readInfo;
-
-  private boolean writeWeekly;
-
-  private boolean readWeekly;
-
-  private boolean writeBus;
-
-  private boolean readBus;
-
-  private boolean writeParking;
-
-  private boolean readParking;
 
   private boolean writeAuth;
 
