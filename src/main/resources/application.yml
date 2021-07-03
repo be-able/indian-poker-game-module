@@ -21,3 +21,8 @@ spring:
     database-platform: 'org.hibernate.dialect.MariaDB103Dialect'
     generate-ddl: true
     show-sql: true
+user.root:
+  email: ${env.USER_ROOT_EMAIL}
+  saved: ${env.USER_ROOT_SAVED}
+  name: ${env.USER_ROOT_NAME}
+  key: ${env.SECRET_KEY}

@@ -24,6 +24,18 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.3'
 
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    // common-lang
+    implementation 'org.apache.commons:commons-lang3:3.8.1'
+
+    // validation
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+
+    // env
+    implementation "io.github.cdimascio:java-dotenv:5.1.4"
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
