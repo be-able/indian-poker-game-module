@@ -62,7 +62,8 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, UNAUTHORIZED_MESSAGE);
     }
     return Response.okJson(this.usersService.getUsers().stream()
-        .map(UserEntity::toDto).collect(Collectors.toList()));
+        .map(UserEntity::toDto)
+        .collect(Collectors.toList()));
   }
 
   @PutMapping(value = "/users/{userID}/authorization")
@@ -80,31 +81,27 @@ public class UserController {
   }
 
   @PostMapping(path = "/user/sign-in")
-  public ResponseEntity<SignResponse> trySignIn(@Valid @RequestBody SignInRequest request) {
+  public ResponseEntity<SignResponse> trySignIn(@Valid @RequestBody SignInRequest request)
+      throws LogicalException {
 
     if (request == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식 입니다");
     }
 
-    try {
-      return Response.okJson(this.usersService.signIn(request.getEmail(), request.getSaved()));
-    } catch (LogicalException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-    }
+    return Response.okJson(this.usersService.signIn(request.getEmail(), request.getSaved()));
   }
 
   @PostMapping(path = "/user/sign-up")
-  public ResponseEntity<SignResponse> trySignUp(@Valid @RequestBody SignUpRequest request) {
+  public ResponseEntity<SignResponse> trySignUp(@Valid @RequestBody SignUpRequest request)
+      throws LogicalException {
 
     if (request == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식 입니다");
     }
 
-    try {
-      return Response.okJson(this.usersService.signUp(request.getEmail(),
-          request.getName(), request.getSaved()));
-    } catch (LogicalException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-    }
+    String email = request.getEmail();
+    String name = request.getName();
+    String saved = request.getSaved();
+    return Response.okJson(this.usersService.signUp(email, name, saved));
   }
 }
