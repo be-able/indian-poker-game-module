@@ -34,7 +34,7 @@ public class JwtServiceImpl implements JwtService {
 
   private static final String KEY_AUTHOR = "auth";
 
-  @Value("${env.SECRET_KEY}")
+  @Value("${user.root.key}")
   private String secretKey = "THIS_IS_TEST_KEY";
 
   private byte[] secretKeyByteArray = null;

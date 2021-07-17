@@ -12,10 +12,10 @@ import indian.poker.game.entity.UserEntity;
 import indian.poker.game.error.LogicalException;
 import indian.poker.game.service.JwtService;
 import indian.poker.game.service.UsersService;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,16 +54,14 @@ public class UserController {
 
 
   @GetMapping(value = "/users")
-  public ResponseEntity<List<UserDto>> getUsers(
-      @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+  public ResponseEntity<Page<UserDto>> getUsers(
+      @RequestHeader(HttpHeaders.AUTHORIZATION) String token, Pageable pageRequest) {
 
     JwtData jwtData = this.jwtService.checkJwt(token);
     if (!jwtData.isAuthRead()) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, UNAUTHORIZED_MESSAGE);
     }
-    return Response.okJson(this.usersService.getUsers().stream()
-        .map(UserEntity::toDto)
-        .collect(Collectors.toList()));
+    return Response.okJson(this.usersService.getUsers(pageRequest).map(UserEntity::toDto));
   }
 
   @PutMapping(value = "/users/{userID}/authorization")

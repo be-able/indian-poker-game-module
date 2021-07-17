@@ -6,13 +6,14 @@ import indian.poker.game.data.dto.user.SignResponse;
 import indian.poker.game.data.sign.UserData;
 import indian.poker.game.entity.UserEntity;
 import indian.poker.game.error.LogicalException;
+import indian.poker.game.error.LogicalExceptionType;
 import indian.poker.game.repository.UsersRepository;
-import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
-@PropertySource(value = "classpath:application.yml")
 public class UsersService {
 
   /**
@@ -62,9 +62,9 @@ public class UsersService {
         .toAuthorizationDto();
   }
 
-  public List<UserEntity> getUsers() {
+  public Page<UserEntity> getUsers(Pageable pageRequest) {
 
-    return this.usersRepository.findAll();
+    return this.usersRepository.findAll(pageRequest);
   }
 
   public void initRootUser() {
@@ -106,11 +106,11 @@ public class UsersService {
       @Nullable String saved) throws LogicalException {
 
     UserEntity users = this.usersRepository.findByEmail(email)
-        .orElseThrow(() -> new LogicalException("존재하지 않는 이메일 입니다"));
+        .orElseThrow(() -> new LogicalException(LogicalExceptionType.INVALID_EMAIL));
     if (users.getSaved().equals(saved)) {
       this.usersRepository.delete(users);
     } else {
-      throw new LogicalException("비밀번호가 잘못 되었습니다");
+      throw new LogicalException(LogicalExceptionType.INVALID_PASSWORD);
     }
 
   }
@@ -141,11 +141,11 @@ public class UsersService {
 
     if (StringUtils.isBlank(email)
         || StringUtils.isBlank(saved)) {
-      throw new LogicalException("정보가 비어있습니다");
+      throw new LogicalException(LogicalExceptionType.EMPTY_FIELD);
     }
 
     UserEntity users = this.usersRepository.findByEmail(email)
-        .orElseThrow(() -> new LogicalException("잘못된 이메일입니다"));
+        .orElseThrow(() -> new LogicalException(LogicalExceptionType.INVALID_EMAIL));
 
     if (users.getSaved().equals(saved)) {
       return SignResponse.builder()
@@ -154,7 +154,7 @@ public class UsersService {
           .id(users.getId())
           .build();
     } else {
-      throw new LogicalException("잘못된 비밀번호입니다");
+      throw new LogicalException(LogicalExceptionType.INVALID_PASSWORD);
     }
 
   }
@@ -173,15 +173,15 @@ public class UsersService {
       @NonNull String saved) throws LogicalException {
 
     if (StringUtils.isBlank(email)) {
-      throw new LogicalException("이메일이 비어있습니다");
+      throw new LogicalException(LogicalExceptionType.EMPTY_FIELD_EMAIL);
     }
 
     if (StringUtils.isBlank(name)) {
-      throw new LogicalException("이름이 비어있습니다");
+      throw new LogicalException(LogicalExceptionType.EMPTY_FIELD_NAME);
     }
 
     if (StringUtils.isBlank(saved)) {
-      throw new LogicalException("Password 가 비어있습니다");
+      throw new LogicalException(LogicalExceptionType.EMPTY_FIELD_PASSWORD);
     }
 
     UserData userDto = UserData.builder()
@@ -206,7 +206,7 @@ public class UsersService {
 
     String email = userDto.getEmail();
     if (this.isExistEmailUser(email)) {
-      throw new LogicalException("이미 존재하는 이메일입니다");
+      throw new LogicalException(LogicalExceptionType.ALREADY_EXIST_EMAIL);
     }
     UserEntity entity = this.usersRepository.save(userDto.toEntity());
     return entity.toData();

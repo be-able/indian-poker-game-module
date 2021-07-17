@@ -1,30 +1,40 @@
 package indian.poker.game.error;
 
+import lombok.Getter;
+
 public class LogicalException extends Exception {
 
-  public LogicalException(String errorMessage) {
+  @Getter
+  private final LogicalExceptionType messageType;
 
-    super(errorMessage);
+  public LogicalException(LogicalExceptionType message) {
+
+    super(message.getMessage());
+    this.messageType = message;
   }
 
   public LogicalException() {
 
     super();
+    this.messageType = LogicalExceptionType.NONE;
   }
 
-  public LogicalException(String message, Throwable cause) {
+  public LogicalException(LogicalExceptionType message, Throwable cause) {
 
-    super(message, cause);
+    super(message.getMessage(), cause);
+    this.messageType = message;
   }
 
   public LogicalException(Throwable cause) {
 
     super(cause);
+    this.messageType = LogicalExceptionType.NONE;
   }
 
-  public LogicalException(String message, Throwable cause, boolean enableSuppression,
+  public LogicalException(LogicalExceptionType message, Throwable cause, boolean enableSuppression,
       boolean writableStackTrace) {
 
-    super(message, cause, enableSuppression, writableStackTrace);
+    super(message.getMessage(), cause, enableSuppression, writableStackTrace);
+    this.messageType = message;
   }
 }
